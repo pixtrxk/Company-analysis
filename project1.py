@@ -20,10 +20,11 @@ def option_all_companies(df, salary_coefficient):
         print('Choose option: ')
         print('1. Effectiveness of companies')
         print('2. Total production ')
+        print('(q) Quit to main menu')
         choice = input("Enter your choice: ")
         if choice == '1': 
             while True:
-                choice_1 =  input('Show the most (1) or the least (2) effective company') 
+                choice_1 =  input('(1) Show the most effective company\n(2) Show the least effective company\n(q) Quit to the preious choice\nEnter your choice:  ') 
                 if choice_1 == '1':
                     max_productivity(df)
                 elif choice_1 == '2':
@@ -33,16 +34,11 @@ def option_all_companies(df, salary_coefficient):
                 else:
                     print('Incorrect choice')
         if choice == '2':
-            while True:
-                total_production(df)
-                break
+            total_production(df)
         elif choice == 'q':
-            return
+            break
                 
-
-
-
-    
+   
 
 def option_single_company(df,order,salary_coefficient):
 
@@ -52,13 +48,14 @@ def option_single_company(df,order,salary_coefficient):
 
     while True:
         print('Choose option: ')
-        print("1. Sort company's products or salaries")
-        print("2. Plots")
+        print("(1) Sort company's products or salaries")
+        print("(2) Plots")
+        print('(q) Quit to main menu')
         choice = input("Enter your choice: ")
         
         if choice == '1':
             while True:
-                choice_1 = input('Do you wanna see the sorted products (1) or salaries (2) of that company?: ')
+                choice_1 = input('(1) Sorted products of that company\n(2) Sorted salaries of that company: \n(q) Quit to the previous choice\nEnter your choice: ')
                 if choice_1 == '1':
                     df_sorted = np.sort(df[order])
                     print(df_sorted)
@@ -73,7 +70,7 @@ def option_single_company(df,order,salary_coefficient):
             
         elif choice == '2':
             while True:
-                choice_2 = input('Do you wanna see the plots of employees rank to their amount od products/month (1) and their salaries or plots of deviations? (2)')
+                choice_2 = input('(1) Plots of employees rank to their amount od products/month and their salaries\n(2) Plots of deviations\n(q) Quit to the previous choice\nEnter your choice: ')
                 if choice_2 =='1':
                     print(company.show_data())
                 elif choice_2 == '2':
@@ -83,23 +80,17 @@ def option_single_company(df,order,salary_coefficient):
                 else:
                     print('Incorrect choice')
 
-        elif choice == 'qq':
+        elif choice == 'q':
             break
 
         else:
             print('Incoorect choice')
 
 
-    
-# def summ(order,df):
-#     return np.sum(df[order])
-
 def max_productivity(df):
     best_index = np.argmax(np.sum(df, axis=1)) 
     num_of_products = np.sum(df[best_index])
     print(f'The best company is {best_index + 1} company with {num_of_products} products')
-
-
 
 def min_productivity(df):
     worst_index = np.argmin(np.sum(df, axis=1)) 
@@ -125,59 +116,60 @@ def file_handling():
         df = np.array([np.array(row) for row in lines], dtype='object')
         return df
         
-
     
 def main():
 
     df = file_handling()
+    while True:
+        print('Choose analysis type: ')
+        print('(1) Analyze a single company')
+        print('(2) Analyze all companies')
+        print('(q) Quit program')
 
-    print('Choose analysis type: ')
-    print('1. Analyze a single company')
-    print('2. Analyze all companies')
+        analysis_type = input("Enter your choice: ")
+        if analysis_type == '1':
+            while True:            
+                try:
+                    company_index = int(input(f"Enter the company index (1 to {len(df)}): ")) - 1
+                    if 0 <= company_index <len(df):
+                        break
+                    else:
+                        print("Invalid company index. Please enter a valid index.")
 
-    analysis_type = input("Enter your choice: ")
-    if analysis_type == '1':
+                except (ValueError, IndexError):
+                    print("Invalid input. Please enter valid indices")
+                    continue
+
+            while True:            
+                try:
+                    salary_coefficient = float(input("Enter the salary coefficient: "))
+                    break
+                except (ValueError, IndexError):
+                    print("Invalid input. Please enter valid coefficients.")
+                    continue
+            
+
+            display_results(df,company_index,salary_coefficient)
+            option_single_company(df,company_index,salary_coefficient)
+
+        elif analysis_type == '2':
+            while True:
+                try:
+                    salary_coefficient = float(input("Enter the salary coefficient: "))
+                    break
+                except (ValueError, IndexError):
+                    print("Invalid input. Please enter valid indices and coefficients.")
+                    continue
+                
+            option_all_companies(df, salary_coefficient)
         
-        try:
-            company_index = int(input(f"Enter the company index (1 to {len(df)}): ")) - 1
-            salary_coefficient = float(input("Enter the salary coefficient: "))
-        except (ValueError, IndexError):
-            print("Invalid input. Please enter valid indices and coefficients.")
-        
+        elif analysis_type =='q':
+            break
+            
 
-        if not (0 <= company_index <len(df)):
-            print("Invalid company index. Please enter a valid index.")
-
-        display_results(df,company_index,salary_coefficient)
-        option_single_company(df,company_index,salary_coefficient)
-
-    elif analysis_type == '2':
-
-        try:
-            salary_coefficient = float(input("Enter the salary coefficient: "))
-        except (ValueError, IndexError):
-            print("Invalid input. Please enter valid indices and coefficients.")
-        
-        option_all_companies(df, salary_coefficient)
-
-        
-
-    else:
-            print('Incoorect choice')
+        else:
+                print('Incoorect choice')
     
-    
 
-
-    # base = file_handling()
-    # user_salary_coefficient = float(input('Enter the salary coefficient: '))
-    # first_br = IntArray(base[0])
-    # first_br.salary_coefficient = user_sa
-    # lary_coefficient
-    # first_br.display()
-    # first_br.show_data()
-    # print(first_br.salary())
-    
-    # max_productivity(base)
-    # min_productivity(base)
 if __name__ == '__main__':
     main()

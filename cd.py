@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 class IntArray:
 
     def __init__(self,int_array):        
-        self.salary_coefficient = None
         if not isinstance(int_array, (list, np.ndarray)) or not all(isinstance(val, int) for val in int_array):
             raise ValueError('Input must be a list or NumPy array of integers')
-        
+        self._salary_coefficient = None
         self.int_array = int_array
 
     @property
@@ -30,7 +29,7 @@ class IntArray:
         array_shape = self.int_array.shape
         money_per_product = np.full(array_shape, self.salary_coefficient)
         salaries = self.int_array * money_per_product
-        return f'People made {self.int_array} products an their salaries are {salaries}'
+        return f'People made {np.array2string(self.int_array)} products an their salaries are {salaries}'
     
     def get_salaries(self):
         array_shape = self.int_array.shape
